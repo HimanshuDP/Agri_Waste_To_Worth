@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Logistics & Fleet Routing - AgriWaste to Worth</title>
+    <meta name="description" content="AI-optimized biomass hauling and stubble baler routing. Connect farmers to industrial processors with deadhead avoidance and instant delivery payments.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .logistics-container {
+            display: flex;
+            height: calc(100vh - 110px);
+            overflow: hidden;
+            background: var(--bg-page);
+        }
+        
+        .sidebar-panel {
+            width: 380px;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            padding: var(--space-4) var(--space-5);
+            border-bottom: 1px solid var(--border-subtle);
+            background: var(--bg-surface);
+        }
+
+        .sidebar-header h2 {
+            margin: 0 0 var(--space-2) 0;
+            font-size: var(--text-lg);
+            font-family: var(--font-heading);
+            color: var(--text-strong);
+        }
+
+        .sidebar-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .sidebar-actions button {
+            flex: 1;
+            padding: var(--space-2);
+            font-size: var(--text-xs);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+            font-weight: 700;
+            transition: all var(--duration-snappy) var(--ease-standard);
+        }
+
+        .btn-optimize { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .btn-optimize:hover { background: var(--primary-hover); }
+        .btn-cluster { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+        .btn-cluster:hover { opacity: 0.9; }
+
+        .pickup-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-4);
+        }
+
+        .pickup-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-left: 4px solid var(--sand-400);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            margin-bottom: var(--space-3);
+            transition: all var(--duration-snappy) var(--ease-standard);
+            cursor: pointer;
+        }
+        
+        .pickup-item:hover {
+            box-shadow: var(--shadow-sm);
+            transform: translateY(-2px);
+        }
+
+        .pickup-item.high-risk { border-left-color: var(--danger-color); background: rgba(222, 95, 61, 0.05); }
+        .pickup-item.medium-risk { border-left-color: var(--accent-color); background: rgba(222, 147, 29, 0.05); }
+        .pickup-item.low-risk { border-left-color: var(--primary-color); }
+        .pickup-item.clustered { border-left-color: #7c3aed; background: rgba(124, 58, 237, 0.05); }
+
+        .pickup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-2);
+        }
+
+        .pickup-header h4 { margin: 0; font-size: var(--text-sm); font-weight: 700; color: var(--text-strong); }
+        
+        .badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: var(--radius-pill);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .badge.bg-red { background: var(--danger-color); }
+        .badge.bg-yellow { background: var(--accent-color); }
+        .badge.bg-green { background: var(--primary-color); }
+
+        .pickup-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-complete {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all var(--duration-snappy) var(--ease-standard);
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-complete:hover {
+            color: var(--primary-hover);
+            transform: scale(1.15);
+        }
+
+        .pickup-details {
+            font-size: var(--text-xs);
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .pickup-details i { width: 16px; text-align: center; margin-right: 5px; color: var(--text-muted); }
+
+        .map-panel {
+            flex: 1;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .route-stats-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-surface);
+            padding: var(--space-4) var(--space-5);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-subtle);
+            min-width: 260px;
+            display: none;
+            z-index: 100;
+        }
+        .route-stats-overlay h3 { margin: 0 0 10px 0; font-size: var(--text-sm); font-family: var(--font-heading); color: var(--text-strong);}
+        .stat-line { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: var(--text-xs); color: var(--text-muted); }
+        .stat-line strong { color: var(--text-strong); font-family: var(--font-mono); }
+        
+        .loader-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+        }
+        .spinner { animation: spin 1s linear infinite; font-size: 2rem; color: var(--primary-color); margin-bottom: 10px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+        <div class="container">
+            <a href="index.html" class="nav-brand" aria-label="AgriWaste to Worth Home">
+                <i class="fas fa-leaf" aria-hidden="true"></i>
+                <span>AgriWaste to Worth</span>
+            </a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" data-i18n="navHome">Home</a></li>
+                <li><a href="marketplace.html" data-i18n="navMarket">Marketplace</a></li>
+                <li><a href="ai-analyzer.html" data-i18n="navAnalyzer">AI Analyzer</a></li>
+                <li><a href="chatbot.html" data-i18n="navChatbot">Chatbot</a></li>
+                <li><a href="dashboard.html" data-i18n="navDashboard">Dashboard</a></li>
+                <li><a href="logistics.html" class="active" data-i18n="navLogistics">Logistics Fleet</a></li>
+                <li><a href="about.html" data-i18n="navAbout">About</a></li>
+            </ul>
+            <div class="nav-actions">
+                                <!-- Language Switcher -->
+                <div class="lang-selector-group" id="mainLangSwitcher">
+                    <button type="button" class="lang-btn active" data-lang="en" onclick="window.switchLanguage('en')">EN</button>
+                    <button type="button" class="lang-btn" data-lang="hi" onclick="window.switchLanguage('hi')">हिंदी</button>
+                    <button type="button" class="lang-btn" data-lang="mr" onclick="window.switchLanguage('mr')">मराठी</button>
+                </div>
+
+                <!-- Theme Toggle -->
+                <button class="btn-icon" id="themeToggleBtn" aria-label="Toggle Theme" title="Toggle Dark/Light Mode">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+
+                <button class="btn-icon" id="cartBtn" aria-label="Purchase Cart" onclick="window.location.href='marketplace.html#cartSidebar'"><i class="fas fa-shopping-cart"></i><span class="badge" id="cartBadge">0</span></button>
+                <button class="btn-icon" id="notificationBtn" aria-label="Notifications" onclick="alert('Notification Center: 3 active haulage dispatches')"><i class="fas fa-bell"></i><span class="badge" id="notifBadge">3</span></button>
+                <div class="user-menu" id="userMenu" style="display:none">
+                    <img src="https://ui-avatars.com/api/?name=Desh+Transporters&background=BA7612&color=fff" alt="User" class="user-avatar">
+                    <span class="user-name">Guest</span>
+                    <button class="btn-text" id="logoutBtn" style="margin-left:12px">Logout</button>
+                </div>
+                <button class="btn-primary" id="loginBtn">Login</button>
+                <button class="btn-secondary" id="signupBtn">Sign Up</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="logistics-container">
+        <!-- Sidebar -->
+        <div class="sidebar-panel">
+            <div class="sidebar-header">
+                <h2>Pending Biomass Pickups</h2>
+                <div class="sidebar-actions">
+                    <button type="button" class="btn-cluster" onclick="window.clusterPickups()"><i class="fas fa-object-group"></i> AI Cluster</button>
+                    <button type="button" class="btn-optimize" onclick="window.optimizeRoute()"><i class="fas fa-route"></i> Optimize Route</button>
+                </div>
+            </div>
+            <div class="pickup-list" id="pickupList">
+                <p style="text-align:center; padding: 20px; color:var(--text-muted);">Initializing Logistics Data...</p>
+            </div>
+        </div>
+
+        <!-- Map View -->
+        <div class="map-panel">
+            <div id="map"></div>
+            
+            <div class="route-stats-overlay" id="routeStats">
+                <h3><i class="fas fa-chart-line text-amber"></i> Route Optimization Metrics</h3>
+                <div class="stat-line"><span>Total Distance:</span> <strong id="valDist">-- km</strong></div>
+                <div class="stat-line"><span>Est. Duration:</span> <strong id="valDur">-- hrs</strong></div>
+                <div class="stat-line"><span>Fuel Efficiency:</span> <strong style="color:var(--primary-color)" id="valEff">Optimal (22% Saved)</strong></div>
+            </div>
+            
+            <div class="loader-overlay" id="loader">
+                <i class="fas fa-circle-notch spinner"></i>
+                <h4 id="loaderText" style="font-family:var(--font-heading);color:var(--text-strong);">Finding Fastest Route for Biomass Trucks...</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:5000;justify-content:center;align-items:center;backdrop-filter:blur(5px);">
+        <div class="payment-card" style="background:var(--bg-surface);padding:30px;border-radius:20px;width:400px;text-align:center;box-shadow:var(--shadow-xl);border:1px solid var(--border-subtle);">
+            <div class="payment-icon" style="font-size:3rem;color:var(--primary-color);margin-bottom:15px;"><i class="fas fa-check-circle"></i></div>
+            <h3 style="font-family:var(--font-heading);margin-top:0;">Biomass Delivery Confirmed!</h3>
+            <div class="payment-amount" id="paymentAmount" style="font-size:2.2rem;font-weight:800;color:var(--primary-color);font-family:var(--font-mono);margin:10px 0;">₹0</div>
+            <p class="payment-details" id="paymentDetails" style="color:var(--text-muted);margin-bottom:20px;font-size:0.9rem;">Processing escrow payment to farmer & crediting freight...</p>
+            <div style="display:flex;gap:10px;">
+                <button type="button" class="btn-outline" onclick="document.getElementById('paymentModal').style.display='none'" style="flex:1;">Cancel</button>
+                <button type="button" class="btn-primary" id="confirmPayment" style="flex:2;">Confirm & Release</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal Container -->
+    <div id="authModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalHeading">
+        <div class="modal-content">
+            <button class="close" aria-label="Close modal">&times;</button>
+            <div class="auth-container">
+                <div class="auth-form" id="loginForm">
+                    <h2 id="modalHeading">Welcome Back</h2>
+                    <form>
+                        <div class="form-group">
+                            <label for="loginEmail">Email / Phone</label>
+                            <input type="email" id="loginEmail" autocomplete="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" autocomplete="current-password" required>
+                        </div>
+                        <button type="submit" class="btn-primary btn-block">Login</button>
+                        <p class="auth-switch" style="margin-top:var(--space-3);text-align:center;font-size:var(--text-xs);">Don't have an account? <a href="#" id="showSignup">Sign Up</a></p>
+                    </form>
+                </div>
+                <div class="auth-form hidden" id="signupForm">
+                    <h2>Create Account</h2>
+                    <form>
+                        <div class="form-group">
+                            <label for="signupName">Full Name</label>
+                            <input type="text" id="signupName" autocomplete="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupEmail">Email</label>
+                            <input type="email" id="signupEmail" autocomplete="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <input type="password" id="signupPassword" autocomplete="new-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userType">Role on Marketplace</label>
+                            <select id="userType" required>
+                                <option value="farmer">Farmer / Residue Producer</option>
+                                <option value="buyer">Industrial Buyer (Power / Bio-CNG)</option>
+                                <option value="transporter">Transporter / Haulage Fleet</option>
+                                <option value="processor">Aggregator</option>
+                                <option value="admin">Platform Administrator</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary btn-block">Sign Up</button>
+                        <p class="auth-switch" style="margin-top:var(--space-3);text-align:center;font-size:var(--text-xs);">Already have an account? <a href="#" id="showLogin">Login</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/image_map.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/logistics.js"></script>
+    <script src="js/auth.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMllqkUXgnzQ1mGtADKHsJJjfMYcOwDt0&callback=initMap"></script>
+</body>
+</html>

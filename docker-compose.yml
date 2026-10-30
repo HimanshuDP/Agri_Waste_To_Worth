@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  agriwaste-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agriwaste_production_app
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - FLASK_ENV=production
+      - SECRET_KEY=agriwaste-production-secret-key-2026
+      - GROQ_API_KEY=${GROQ_API_KEY:-your_groq_api_key_here}
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-rzp_test_your_key_id}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET:-your_razorpay_secret_here}
+    volumes:
+      - ./data:/app/data
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+

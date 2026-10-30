@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "currency": "INR",
+    "unit": "₹ / Metric Ton",
+    "lastUpdated": "2026-03-28",
+    "nationalBenchmarkIndex": 118.4
+  },
+  "monthlyPriceTrends": {
+    "months": [
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+      "Jan",
+      "Feb",
+      "Mar"
+    ],
+    "riceStraw": [
+      4200,
+      4100,
+      3950,
+      4000,
+      4150,
+      4400,
+      5600,
+      5400,
+      5100,
+      4900,
+      5050,
+      5200
+    ],
+    "wheatStraw": [
+      3800,
+      4000,
+      4300,
+      4500,
+      4600,
+      4550,
+      4400,
+      4350,
+      4400,
+      4450,
+      4500,
+      4500
+    ],
+    "sugarcaneBagasse": [
+      3600,
+      3700,
+      3900,
+      4100,
+      4150,
+      4000,
+      3800,
+      3500,
+      3400,
+      3600,
+      3750,
+      3800
+    ],
+    "cottonStalks": [
+      2400,
+      2450,
+      2500,
+      2600,
+      2650,
+      2700,
+      2750,
+      2800,
+      2900,
+      2850,
+      2800,
+      2800
+    ],
+    "groundnutShell": [
+      4400,
+      4500,
+      4550,
+      4600,
+      4650,
+      4700,
+      4900,
+      5000,
+      4950,
+      4850,
+      4800,
+      4800
+    ]
+  },
+  "regionalMandiRates": [
+    {
+      "mandi": "Khanna Mandi, Punjab",
+      "crop": "Rice Paddy Straw",
+      "todayRate": 5250,
+      "prevRate": 5100,
+      "trend": "+150",
+      "volumeToday": 420,
+      "qualityStandard": "Dry Baled (<12% M)"
+    },
+    {
+      "mandi": "Karnal Mandi, Haryana",
+      "crop": "Wheat Straw Bales",
+      "todayRate": 4600,
+      "prevRate": 4500,
+      "trend": "+100",
+      "volumeToday": 350,
+      "qualityStandard": "Turi Grade-A"
+    },
+    {
+      "mandi": "Muzaffarnagar, UP",
+      "crop": "Sugarcane Bagasse",
+      "todayRate": 3900,
+      "prevRate": 3900,
+      "trend": "0",
+      "volumeToday": 850,
+      "qualityStandard": "Mill Wet (38% M)"
+    },
+    {
+      "mandi": "Akola, Maharashtra",
+      "crop": "Cotton Stalks",
+      "todayRate": 2850,
+      "prevRate": 2770,
+      "trend": "+80",
+      "volumeToday": 190,
+      "qualityStandard": "Chipped 2-inch"
+    },
+    {
+      "mandi": "Rajkot, Gujarat",
+      "crop": "Groundnut Shells",
+      "todayRate": 4950,
+      "prevRate": 4850,
+      "trend": "+100",
+      "volumeToday": 260,
+      "qualityStandard": "Husk Clean (<10% M)"
+    },
+    {
+      "mandi": "Davanagere, Karnataka",
+      "crop": "Maize Stover",
+      "todayRate": 3350,
+      "prevRate": 3300,
+      "trend": "+50",
+      "volumeToday": 140,
+      "qualityStandard": "Shredded Bales"
+    },
+    {
+      "mandi": "Burdwan, West Bengal",
+      "crop": "Rice Husk",
+      "todayRate": 5600,
+      "prevRate": 5500,
+      "trend": "+100",
+      "volumeToday": 310,
+      "qualityStandard": "Mill Huller Clean"
+    }
+  ],
+  "environmentalImpactMetrics": {
+    "totalTonsDivertedFromBurning": 1420,
+    "co2eAvoidedMetricTons": 2059,
+    "pm25PreventedKg": 8520,
+    "farmerIncrementalIncomeINR": 4280000,
+    "equivalentCarsOffRoadPerYear": 448
+  }
+}

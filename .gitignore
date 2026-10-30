@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+ENV/
+.env
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Streamlit
+.streamlit/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large datasets & uploads
+Dataset/
+uploads/
+results/
+temp/
+*.mp3
+*.log
+models/temp_model.h5
+models/_saved_model_tmp/
