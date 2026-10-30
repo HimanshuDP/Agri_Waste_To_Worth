@@ -1,5 +1,17 @@
 # AgriWaste to Worth - AI-Powered Biomass Repurposing Platform
 
+[![GitHub Release](https://img.shields.io/github/v/release/HimanshuDP/Agri_Waste_To_Worth)](https://github.com/HimanshuDP/Agri_Waste_To_Worth/releases/tag/v1.0.0)
+[![Dataset](https://img.shields.io/badge/Dataset-Download%20v1.0.0-success)](https://github.com/HimanshuDP/Agri_Waste_To_Worth/releases/download/v1.0.0/agriwaste_crop_dataset_v1.0.0.zip)
+
+## 📦 Crop Vision Dataset Release
+
+The complete computer vision training dataset covering **16 agricultural residue and crop categories** is published as an official release package:
+
+- 📥 **Direct Download**: [agriwaste_crop_dataset_v1.0.0.zip (97.5 MB)](https://github.com/HimanshuDP/Agri_Waste_To_Worth/releases/download/v1.0.0/agriwaste_crop_dataset_v1.0.0.zip)
+- 🏷️ **GitHub Release**: [v1.0.0 Release Page](https://github.com/HimanshuDP/Agri_Waste_To_Worth/releases/tag/v1.0.0)
+- 🌾 **Categories (16 classes)**: Bamboo Waste, Banana, Cattle Dung, Coffee, Cotton, Groundnut, Jute, Maize, Palm Fronds, Poultry Litter, Rice, Soybean, Sugarcane, Sunflower, Tea Waste, Wheat.
+- 📊 **Tabular Datasets (CSV)**: Included in the zip and also version-controlled under [data/](data/).
+
 ## 📋 Project Overview
 
 A comprehensive web application for agricultural waste management marketplace using AI-powered features for waste classification, price prediction, and intelligent buyer-seller matching.
