@@ -13,14 +13,11 @@ services:
         value: production
       - key: SECRET_KEY
         generateValue: true
+      - key: WEB_CONCURRENCY
+        value: "1"
       - key: GROQ_API_KEY
         sync: false
       - key: RAZORPAY_KEY_ID
         sync: false
       - key: RAZORPAY_KEY_SECRET
         sync: false
-    disk:
-      name: agriwaste-data
-      mountPath: /opt/render/project/src/data
-      sizeGB: 1
-
