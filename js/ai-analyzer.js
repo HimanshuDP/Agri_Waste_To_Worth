@@ -345,53 +345,76 @@ function initializeImageUpload() {
     const imageUpload = document.getElementById('imageUpload');
     const uploadArea = document.getElementById('uploadArea');
     
-    // Click to upload
-    uploadArea?.addEventListener('click', () => {
-        imageUpload?.click();
+    // Click to upload on dropzone (avoiding duplicate clicks when clicking label)
+    uploadArea?.addEventListener('click', (e) => {
+        if (e.target !== imageUpload && !e.target.closest('label')) {
+            imageUpload?.click();
+        }
     });
     
     // Drag and drop
     uploadArea?.addEventListener('dragover', (e) => {
         e.preventDefault();
-        uploadArea.style.borderColor = '#2ecc71';
-        uploadArea.style.background = '#f0f8f5';
+        uploadArea.style.borderColor = 'var(--primary, #2ecc71)';
+        uploadArea.style.background = 'rgba(46, 204, 113, 0.08)';
     });
     
     uploadArea?.addEventListener('dragleave', (e) => {
         e.preventDefault();
-        uploadArea.style.borderColor = '#ddd';
+        uploadArea.style.borderColor = '';
         uploadArea.style.background = '';
     });
     
     uploadArea?.addEventListener('drop', (e) => {
         e.preventDefault();
-        uploadArea.style.borderColor = '#ddd';
+        uploadArea.style.borderColor = '';
         uploadArea.style.background = '';
         
-        const files = Array.from(e.dataTransfer.files);
-        handleFiles(files);
+        const files = Array.from(e.dataTransfer?.files || []);
+        if (files.length > 0) {
+            handleFiles(files);
+        }
     });
     
-    // File input change
+    // File input change handler
     imageUpload?.addEventListener('change', (e) => {
-        const files = Array.from(e.target.files);
-        handleFiles(files);
+        const files = Array.from(e.target.files || []);
+        if (files.length > 0) {
+            handleFiles(files);
+        }
+        // Reset file input value so user can select the same file or re-upload anytime
+        imageUpload.value = '';
     });
 }
 
 function handleFiles(files) {
-    // Accept images; PDFs handled by lab report uploader
-    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    if (!files || files.length === 0) return;
+    
+    // Accept images by MIME type or common extensions
+    const isImageFile = (file) => {
+        if (!file) return false;
+        if (file.type && file.type.startsWith('image/')) return true;
+        const name = (file.name || '').toLowerCase();
+        return /\.(jpe?g|png|webp|gif|bmp|svg|tiff|heic|jfif)$/i.test(name);
+    };
+
+    const imageFiles = files.filter(isImageFile);
     
     if (imageFiles.length === 0) {
-        showNotification('Please upload image files only', 'error');
+        if (window.showNotification) {
+            window.showNotification('Please upload valid image files (JPG, PNG, WEBP, etc.)', 'error');
+        } else {
+            alert('Please upload valid image files');
+        }
         return;
     }
     
     // Add to uploaded images
     imageFiles.forEach(file => {
         if (uploadedImages.length >= 15) {
-            showNotification('Maximum 15 images allowed', 'error');
+            if (window.showNotification) {
+                window.showNotification('Maximum 15 images allowed', 'error');
+            }
             return;
         }
         
@@ -724,9 +747,25 @@ function displayResults(results) {
             uploadedThumb.src = 'Dataset/crop_images/rice/rice001a%20-%20Copy%20%2810%29.jpeg';
         }
         uploadedThumb.onerror = function() {
-            window.handleListingImageError(this, 'crop');
+            if (window.handleListingImageError) {
+                window.handleListingImageError(this, 'crop');
+            }
         };
     }
+
+    // Check Detection Threshold (55%)
+    const CONFIDENCE_THRESHOLD = 55.0;
+    const thresholdBox = document.getElementById('thresholdWarningBox');
+    const thresholdText = document.getElementById('thresholdWarningText');
+    const isBelowThreshold = (results.confidence < CONFIDENCE_THRESHOLD) || (results.detected === false);
+
+    if (isBelowThreshold) {
+        if (thresholdBox) {
+            thresholdBox.classList.remove('hidden');
+            if (thresholdText) {
+                thresholdText.innerHTML = `Model confidence (<strong>${results.confidence.toFixed(1)}%</strong>) is below the <strong>${CONFIDENCE_THRESHOLD}%</strong> detection threshold.<br><strong>Not able to clearly detect the crop or waste type.</strong> Please add more pictures from different angles (up to 15 images allowed) or upload clearer, well-lit photos.`;
+            }
+        }
         const confBadge = document.querySelector('.confidence-text .badge');
         if (confBadge) {
             confBadge.style.background = '#e74c3c';

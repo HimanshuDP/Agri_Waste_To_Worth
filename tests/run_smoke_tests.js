@@ -1098,6 +1098,24 @@ async function runTestSuite() {
 
   assert(adminAuthForBuyer === true && adminAuthForFarmer === true, 'SuperAdmin maintains supervisory audit clearance across portals');
 
+  // Test Group 11: Core Client Scripts Syntax & Integrity
+  console.log('\n\x1b[36m[Group 11: Core Client Scripts Syntax & Integrity]\x1b[0m');
+  const jsDir = path.join(__dirname, '../js');
+  const coreScripts = ['ai-analyzer.js', 'main.js', 'marketplace.js', 'dashboard.js', 'logistics.js', 'chatbot.js', 'api.js', 'auth.js', 'i18n.js'];
+  for (const scriptName of coreScripts) {
+    const scriptPath = path.join(jsDir, scriptName);
+    if (fs.existsSync(scriptPath)) {
+      const code = fs.readFileSync(scriptPath, 'utf-8');
+      let syntaxOk = true;
+      try {
+        new vm.Script(code);
+      } catch (err) {
+        syntaxOk = false;
+      }
+      assert(syntaxOk, `Script ${scriptName} compiles without JavaScript syntax errors`);
+    }
+  }
+
 
 
 
