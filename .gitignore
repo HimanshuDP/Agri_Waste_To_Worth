@@ -25,3 +25,5 @@ temp/
 *.log
 models/temp_model.h5
 models/_saved_model_tmp/
+
+Launch_AgriWaste.bat

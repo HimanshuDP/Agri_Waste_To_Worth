@@ -4887,29 +4887,20 @@ select {
 
 
 .analyzed-visual-preview {
-
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
+    display: flex;
+    justify-content: flex-start;
     gap: var(--space-4);
-
     margin-bottom: var(--space-4);
-
 }
 
 .visual-box {
-
     background: var(--sand-50);
-
     border: 1px solid var(--border-subtle);
-
     border-radius: var(--radius-md);
-
     padding: var(--space-3);
-
     text-align: center;
-
+    max-width: 280px;
+    width: 100%;
 }
 
 .visual-box span {

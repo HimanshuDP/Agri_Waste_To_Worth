@@ -694,34 +694,6 @@ function displayResults(results) {
             window.handleListingImageError(this, 'crop');
         };
     }
-    const verifiedRefImg = document.getElementById('verifiedCropReferenceImg');
-    if (verifiedRefImg) {
-        const cropKey = (results.wasteId || results.wasteType || 'rice').toLowerCase().split(/[-_\s]/)[0];
-        let refSrc = '';
-        if (window.CROP_IMAGE_MAP && window.CROP_IMAGE_MAP[cropKey] && window.CROP_IMAGE_MAP[cropKey].length > 0) {
-            refSrc = window.CROP_IMAGE_MAP[cropKey][0];
-        } else {
-            refSrc = 'Dataset/crop_images/rice/rice001a%20-%20Copy%20%2810%29.jpeg';
-        }
-        verifiedRefImg.src = refSrc;
-        verifiedRefImg.onerror = function() {
-            window.handleListingImageError(this, cropKey);
-        };
-    }
-    
-    // Check Detection Threshold (55%)
-    const CONFIDENCE_THRESHOLD = 55.0;
-    const thresholdBox = document.getElementById('thresholdWarningBox');
-    const thresholdText = document.getElementById('thresholdWarningText');
-    const isBelowThreshold = (results.confidence < CONFIDENCE_THRESHOLD) || (results.detected === false);
-
-    if (isBelowThreshold) {
-        if (thresholdBox) {
-            thresholdBox.classList.remove('hidden');
-            if (thresholdText) {
-                thresholdText.innerHTML = `Model confidence (<strong>${results.confidence.toFixed(1)}%</strong>) is below the <strong>${CONFIDENCE_THRESHOLD}%</strong> detection threshold.<br><strong>Not able to clearly detect the crop or waste type.</strong> Please add more pictures from different angles (up to 15 images allowed) or upload clearer, well-lit photos.`;
-            }
-        }
         const confBadge = document.querySelector('.confidence-text .badge');
         if (confBadge) {
             confBadge.style.background = '#e74c3c';
