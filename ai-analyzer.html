@@ -219,8 +219,11 @@
                                 
                                 <div class="analyzed-visual-preview">
                                     <div class="visual-box">
-                                        <span><i class="fas fa-image text-primary"></i> Uploaded Crop Sample</span>
-                                        <img id="uploadedResultThumbnail" src="" alt="Uploaded crop">
+                                        <span>
+                                            <span><i class="fas fa-image text-primary"></i> Uploaded Crop Sample</span>
+                                            <small style="text-transform:none;font-weight:600;color:var(--text-muted);font-size:0.75rem;"><i class="fas fa-search-plus"></i> Click to enlarge</small>
+                                        </span>
+                                        <img id="uploadedResultThumbnail" src="" alt="Uploaded crop" title="Click to inspect full image" onclick="window.openImageZoomModal ? window.openImageZoomModal(this.src, 'Uploaded Crop Sample') : null">
                                     </div>
                                 </div>
 
@@ -454,6 +457,16 @@
                     </form>
                 </div>
             </div>
+        </div>
+    </div>
+
+
+    <!-- Full-Resolution Image Viewer Lightbox Modal -->
+    <div id="imageZoomModal" class="modal" role="dialog" aria-modal="true" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:3000;align-items:center;justify-content:center;padding:20px;">
+        <div style="position:relative;max-width:92vw;max-height:92vh;margin:auto;display:flex;flex-direction:column;align-items:center;">
+            <button type="button" class="close" onclick="window.closeImageZoomModal()" style="position:absolute;top:-38px;right:0;color:#fff;font-size:2.2rem;background:transparent;border:none;cursor:pointer;line-height:1;" aria-label="Close image preview">&times;</button>
+            <h4 id="zoomModalTitle" style="color:#ffffff;margin-bottom:12px;font-weight:600;font-size:1.1rem;letter-spacing:0.02em;">Crop Image Preview (Full Resolution)</h4>
+            <img id="zoomedImage" src="" alt="Full resolution view" style="max-width:100%;max-height:80vh;object-fit:contain;border-radius:var(--radius-md);box-shadow:0 16px 40px rgba(0,0,0,0.6);background:#111;">
         </div>
     </div>
 

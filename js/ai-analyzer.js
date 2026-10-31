@@ -415,17 +415,50 @@ function displayUploadedImages() {
     if (!container) return;
     
     container.innerHTML = '';
+    if (uploadedImages.length === 1) {
+        container.classList.add('single-image');
+    } else {
+        container.classList.remove('single-image');
+    }
     
     uploadedImages.forEach(image => {
         const imageDiv = document.createElement('div');
         imageDiv.className = 'uploaded-img-item';
+        imageDiv.title = 'Click to inspect full image';
+        imageDiv.onclick = () => window.openImageZoomModal && window.openImageZoomModal(image.dataUrl, image.name || 'Uploaded Crop Sample');
         imageDiv.innerHTML = `
             <img src="${image.dataUrl}" alt="${image.name}" onerror="window.handleListingImageError(this, 'crop')">
-            <button type="button" class="remove-img-btn" onclick="removeImage('${image.id}')" title="Remove image">&times;</button>
+            <span style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent, rgba(0,0,0,0.75));color:#fff;font-size:0.75rem;padding:12px 8px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;">${image.name || 'Crop Sample'}</span>
+            <button type="button" class="remove-img-btn" onclick="event.stopPropagation(); removeImage('${image.id}')" title="Remove image">&times;</button>
         `;
         container.appendChild(imageDiv);
     });
 }
+
+// Lightbox modal handlers for high-visibility full image preview
+window.openImageZoomModal = function(src, title) {
+    const modal = document.getElementById('imageZoomModal');
+    const img = document.getElementById('zoomedImage');
+    const titleEl = document.getElementById('zoomModalTitle');
+    if (!modal || !img) return;
+    img.src = src;
+    if (titleEl && title) titleEl.textContent = title;
+    modal.style.display = 'flex';
+};
+
+window.closeImageZoomModal = function() {
+    const modal = document.getElementById('imageZoomModal');
+    if (modal) modal.style.display = 'none';
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const zoomModal = document.getElementById('imageZoomModal');
+    if (zoomModal) {
+        zoomModal.addEventListener('click', (e) => {
+            if (e.target === zoomModal) window.closeImageZoomModal();
+        });
+    }
+});
 
 function removeImage(imageId) {
     uploadedImages = uploadedImages.filter(img => img.id != imageId);
