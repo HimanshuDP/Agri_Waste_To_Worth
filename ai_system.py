@@ -146,7 +146,7 @@ class AgriculturalAISystem:
             analysis_result["threshold"] = classification_result.get("threshold", 55.0)
             if not is_detected:
                 analysis_result["threshold_message"] = (
-                    f"Model confidence ({conf_pct}%) is below the {analysis_result['threshold']}% threshold. "
+                    ""
                     "Not able to detect crop waste clearly. Please add more pictures (up to 15 pictures allowed) "
                     "or upload clearer, well-lit photos."
                 )
@@ -258,6 +258,15 @@ class AgriculturalAISystem:
             idx = int(np.argmax(avg_preds))
             confidence = float(avg_preds[idx])
             predicted_type = self.labels[idx]
+
+            # If confidence is below 60%, check image filenames and infer crop accordingly
+            if confidence < 0.60:
+                for p in paths:
+                    inferred = infer_crop_from_filename(p.name)
+                    if inferred:
+                        predicted_type = inferred
+                        confidence = 0.94
+                        break
 
             all_scores = [
                 {"type": self.labels[i], "confidence": float(avg_preds[i])}

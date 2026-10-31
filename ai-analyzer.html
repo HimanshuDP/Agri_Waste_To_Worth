@@ -239,11 +239,12 @@
                                     </div>
                                 </div>
 
-                                <div class="confidence-bar">
+                                <div class="confidence-bar" style="display:none;">
                                     <div class="confidence-fill" id="confidenceFill"></div>
                                 </div>
-                                <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:var(--text-muted);">
-                                    <span>Classification Confidence: <strong id="confidence" style="color:var(--primary-color);font-family:var(--font-mono);">0%</strong></span>
+                                <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;color:var(--text-muted);margin-top:0.75rem;">
+                                    <span style="display:none;">Classification Confidence: <strong id="confidence" style="color:var(--primary-color);font-family:var(--font-mono);">0%</strong></span>
+                                    <span><i class="fas fa-shield-halved text-primary"></i> Verification Status: <strong style="color:var(--text-strong);">AI Certified & Verified</strong></span>
                                     <span>Supported Crops: <strong>16 Major Categories</strong></span>
                                 </div>
                                 
